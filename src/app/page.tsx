@@ -7,70 +7,13 @@ import {
   Button,
   Select,
   MenuItem,
-  Checkbox,
   List,
-  ListItem,
-  ListItemText,
-  IconButton,
   Typography,
   Box,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "./page.module.css"; // CSS モジュールをインポート
-
-// TodoItemコンポーネントを定義
-function TodoItem({
-  todo,
-  toggleComplete,
-  deleteTodo,
-  toggleTag,
-}: {
-  todo: Todo;
-  toggleComplete: (id: number) => void;
-  deleteTodo: (id: number) => void;
-  toggleTag: (id: number) => void;
-}) {
-  return (
-    <ListItem
-      key={todo.id}
-      secondaryAction={
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Button
-            variant="outlined"
-            onClick={() => toggleTag(todo.id)}
-            className={styles.button}
-          >
-            {todo.tag}
-          </Button>
-
-          <IconButton
-            edge="end"
-            aria-label="delete"
-            onClick={() => deleteTodo(todo.id)}
-            className={styles.button}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-      }
-      divider
-      className={styles.listItemDivider}
-    >
-      <Checkbox
-        checked={todo.completed}
-        onChange={() => toggleComplete(todo.id)}
-        className={styles.checkbox}
-      />
-      <ListItemText
-        primary={todo.text}
-        className={`${styles.listItemText} ${
-          todo.completed ? styles.strikethrough : ""
-        }`}
-        onClick={() => toggleTag(todo.id)}
-      />
-    </ListItem>
-  );
-}
+import TodoItem from "./components/TodoItem";
 
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -104,38 +47,30 @@ export default function Home() {
         },
       ]);
       setInputValue("");
-      setSelectedTag(""); // タグをリセット
+      setSelectedTag("NONE");
     }
   };
 
-  // Enterキーでタスクを追加
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       addTodo();
     }
   };
-
-  // タスクを削除
   const deleteTodo = (id: number) => {
     const newTodos = todos.filter((todo) => todo.id !== id);
     setTodos(newTodos);
   };
-
-  // タスクの完了状態を切り替え
   const toggleComplete = (id: number) => {
     const newTodos = todos.map((todo) =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
     setTodos(newTodos);
   };
-
-  // チェック済みのタスクを全て削除
   const clearCompleted = () => {
     const newTodos = todos.filter((todo) => !todo.completed);
     setTodos(newTodos);
   };
 
-  // タグを切り替える
   const toggleTag = (id: number) => {
     const newTodos = todos.map((todo) => {
       if (todo.id === id) {
@@ -209,6 +144,19 @@ export default function Home() {
           displayEmpty
           variant="outlined"
           className={styles.selectField}
+          sx={{
+            color: "#00ff00", // テキストの色
+            borderColor: "#00ff00",
+            ".MuiOutlinedInput-notchedOutline": {
+              borderColor: "#00ff00",
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#00ff00",
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#00ff00",
+            },
+          }}
         >
           <MenuItem value="">
             <em>タグを選択</em>
