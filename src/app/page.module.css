@@ -1,0 +1,90 @@
+.container {
+  background-color: black;
+  color: #00ff00;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #00ff00;
+}
+
+.clearButton {
+  background-color: #00ff00;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.todoForm {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.todoInput {
+  width: 50%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #00ff00;
+  background-color: #111;
+  color: #00ff00;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.tagSelect {
+  padding: 10px;
+  border: 1px solid #00ff00;
+  background-color: #111;
+  color: #00ff00;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.addButton {
+  background-color: #00ff00;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.todoList {
+  list-style: none;
+  padding: 0;
+}
+
+.todoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #111;
+  color: #00ff00;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.tagBox {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+.deleteButton {
+  background-color: transparent;
+  border: none;
+  color: #00ff00;
+  cursor: pointer;
+}
