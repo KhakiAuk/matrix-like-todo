@@ -1,4 +1,4 @@
-import Image from "next/image";
+"use client";
 import styles from "./page.module.css";
 import { useEffect, useState } from "react";
 import { Todo } from "./types/todo";
@@ -10,7 +10,9 @@ export default function Home() {
 
   // Stores(init, Computed)
   useEffect(() => {
-    const savedTodos = JSON.parse(sessionStorage.getItem("todos") ?? "");
+    const savedTodos = JSON.parse(
+      sessionStorage.getItem("todos") ?? "[]"
+    ) as Todo[];
     if (savedTodos) {
       setTodos(savedTodos);
     }
@@ -34,17 +36,44 @@ export default function Home() {
       setInputValue("");
     }
   };
-  const handleKeyPress = (event: KeyboardEvent) => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       addTodo();
     }
   };
-  const toggleComplete = (id: ) => {
+  const deleteTodo = (id: number) => {
+    const newTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(newTodos);
+  };
+  const toggleComplete = (id: number) => {
     const newTodos = todos.map((todo) =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
     setTodos(newTodos);
   };
+  const clearCompleted = () => {
+    const newTodos = todos.filter((todo) => !todo.completed);
+    setTodos(newTodos);
+  };
+  const toggleTag = (id: number) => {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        const currentIndex = tags.indexOf(todo.tag);
+        const nextIndex = (currentIndex + 1) % tags.length;
+        return { ...todo, tag: tags[nextIndex] };
+      }
+      return todo;
+    });
+    setTodos(newTodos);
+  };
+
+  const tags = [
+    "NONE",
+    "URGENT & IMPORTANT",
+    "IMPORTANT",
+    "URGENT",
+    "Low Priority...",
+  ];
 
   return (
     <div className={styles.container}>
@@ -60,7 +89,7 @@ export default function Home() {
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           placeholder="新しいタスクを追加"
           className={styles.todoInput}
         />
@@ -94,7 +123,8 @@ export default function Home() {
             </span>
             <span
               className={styles.tagBox}
-              style={{ backgroundColor: todo.tag }}
+              style={{ backgroundColor: todo.tag, cursor: "pointer" }}
+              onClick={() => toggleTag(todo.id)}
             ></span>
             <button
               onClick={() => deleteTodo(todo.id)}
