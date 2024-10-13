@@ -7,7 +7,7 @@ import {
   Box,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import styles from "../page.module.css";
+import styles from "../page.module.scss";
 import { Todo } from "../types/todo";
 
 export default function TodoItem({

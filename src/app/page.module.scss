@@ -1,0 +1,94 @@
+$primary-color: #00ff00;
+
+@mixin neon-text($color: #00ff00) {
+  color: $color;
+  text-shadow: 0 0 5px $color, 0 0 10px $color, 0 0 20px $color, 0 0 40px $color;
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00,
+      0 0 40px #00ff00;
+  }
+  to {
+    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00,
+      0 0 80px #00ff00;
+  }
+}
+
+@mixin neon-border($color: #00ff00) {
+  border-color: $color;
+  box-shadow: 0 0 5px $color, 0 0 10px $color, 0 0 15px $color, 0 0 20px $color;
+}
+
+.container {
+  padding: 20px;
+}
+
+.header {
+  @include neon-text(#00ff00);
+  border-bottom: 2px solid #00ff00;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.button {
+  @include neon-text(#00ff00);
+  border-color: #00ff00;
+
+  &:hover {
+    background-color: #00ff00;
+    color: #000000;
+  }
+}
+
+.textField {
+  @include neon-text;
+  border-color: #00ff00;
+
+  .MuiOutlinedInput-root:hover fieldset {
+    @include neon-border;
+  }
+
+  .MuiOutlinedInput-root.Mui-focused fieldset {
+    @include neon-border;
+  }
+}
+
+.selectField {
+  @include neon-text;
+
+  .MuiOutlinedInput-notchedOutline {
+    @include neon-border;
+  }
+
+  &:hover .MuiOutlinedInput-notchedOutline {
+    @include neon-border;
+  }
+
+  &.Mui-focused .MuiOutlinedInput-notchedOutline {
+    @include neon-border;
+  }
+}
+
+.listItemDivider {
+  border-bottom: 1px solid #00ff00;
+}
+
+.checkbox {
+  @include neon-text;
+
+  &.Mui-checked {
+    @include neon-text;
+  }
+}
+
+.listItemText {
+  @include neon-text;
+  cursor: pointer;
+
+  &.strikethrough {
+    text-decoration: line-through;
+  }
+}
