@@ -12,8 +12,15 @@ import {
   Box,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import styles from "./page.module.css"; // CSS モジュールをインポート
+import styles from "./page.module.css";
 import TodoItem from "./components/TodoItem";
+import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { SortableItem } from "./components/SortableItem";
 
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -34,7 +41,6 @@ export default function Home() {
     sessionStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
 
-  // タスクを追加
   const addTodo = () => {
     if (inputValue.trim() !== "") {
       setTodos([
@@ -83,6 +89,20 @@ export default function Home() {
     setTodos(newTodos);
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    console.log("fadsfadsfasdf");
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = todos.findIndex(
+        (todo) => todo.id.toString() === active.id
+      );
+      const newIndex = todos.findIndex(
+        (todo) => todo.id.toString() === over.id
+      );
+
+      setTodos((prevTodos) => arrayMove(prevTodos, oldIndex, newIndex));
+    }
+  };
   const tags = [
     "NONE",
     "URGENT & IMPORTANT",
@@ -173,17 +193,25 @@ export default function Home() {
         </Button>
       </Box>
 
-      <List>
-        {todos.map((todo) => (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            toggleComplete={toggleComplete}
-            deleteTodo={deleteTodo}
-            toggleTag={toggleTag}
-          />
-        ))}
-      </List>
+      <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
+        <SortableContext
+          items={todos.map((todo) => todo.id.toString())}
+          strategy={verticalListSortingStrategy}
+        >
+          <List>
+            {todos.map((todo) => (
+              <SortableItem key={todo.id} id={todo.id.toString()}>
+                <TodoItem
+                  todo={todo}
+                  toggleComplete={toggleComplete}
+                  deleteTodo={deleteTodo}
+                  toggleTag={toggleTag}
+                />
+              </SortableItem>
+            ))}
+          </List>
+        </SortableContext>
+      </DndContext>
     </Box>
   );
 }
