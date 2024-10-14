@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Todo } from "./types/todo";
 import {
   TextField,
   Button,
@@ -13,6 +11,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "./page.module.scss";
+import { useTodos } from "./features/useTodos";
 import TodoItem from "./components/TodoItem";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -23,74 +22,28 @@ import {
 import { SortableItem } from "./components/SortableItem";
 
 export default function Home() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
-  const [selectedTag, setSelectedTag] = useState<string>("NONE");
-
-  // Stores(init, Computed)
-  useEffect(() => {
-    const savedTodos = JSON.parse(
-      sessionStorage.getItem("todos") ?? "[]"
-    ) as Todo[];
-    if (savedTodos) {
-      setTodos(savedTodos);
-    }
-  }, []);
-
-  useEffect(() => {
-    sessionStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
-
-  const addTodo = () => {
-    if (inputValue.trim() !== "") {
-      setTodos([
-        ...todos,
-        {
-          id: Date.now(),
-          text: inputValue,
-          completed: false,
-          tag: selectedTag ? selectedTag : "NONE",
-        },
-      ]);
-      setInputValue("");
-      setSelectedTag("NONE");
-    }
-  };
+  const {
+    todos,
+    inputValue,
+    selectedTag,
+    tags,
+    setTodos,
+    setInputValue,
+    setSelectedTag,
+    addTodo,
+    deleteTodo,
+    toggleComplete,
+    clearCompleted,
+    toggleTag,
+  } = useTodos();
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       addTodo();
     }
   };
-  const deleteTodo = (id: number) => {
-    const newTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(newTodos);
-  };
-  const toggleComplete = (id: number) => {
-    const newTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    );
-    setTodos(newTodos);
-  };
-  const clearCompleted = () => {
-    const newTodos = todos.filter((todo) => !todo.completed);
-    setTodos(newTodos);
-  };
-
-  const toggleTag = (id: number) => {
-    const newTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        const currentIndex = tags.indexOf(todo.tag);
-        const nextIndex = (currentIndex + 1) % tags.length;
-        return { ...todo, tag: tags[nextIndex] };
-      }
-      return todo;
-    });
-    setTodos(newTodos);
-  };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log("fadsfadsfasdf");
     const { active, over } = event;
     if (over && active.id !== over.id) {
       const oldIndex = todos.findIndex(
@@ -99,17 +52,9 @@ export default function Home() {
       const newIndex = todos.findIndex(
         (todo) => todo.id.toString() === over.id
       );
-
       setTodos((prevTodos) => arrayMove(prevTodos, oldIndex, newIndex));
     }
   };
-  const tags = [
-    "NONE",
-    "URGENT & IMPORTANT",
-    "IMPORTANT",
-    "URGENT",
-    "Low Priority...",
-  ];
 
   return (
     <Box className={styles.container}>
