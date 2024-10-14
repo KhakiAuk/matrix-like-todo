@@ -13,7 +13,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "./page.module.scss";
 import { useTodos } from "./features/useTodos";
 import TodoItem from "./components/TodoItem";
-import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
@@ -36,6 +43,14 @@ export default function Home() {
     clearCompleted,
     toggleTag,
   } = useTodos();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -138,7 +153,11 @@ export default function Home() {
         </Button>
       </Box>
 
-      <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
+      <DndContext
+        onDragEnd={handleDragEnd}
+        collisionDetection={closestCenter}
+        sensors={sensors}
+      >
         <SortableContext
           items={todos.map((todo) => todo.id.toString())}
           strategy={verticalListSortingStrategy}
